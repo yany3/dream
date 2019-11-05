@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dr.mapper.ActiveUploadPhotoServiceMapper">
+    <select id="queryUploadTag" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT T.UPLOAD_TAG, T.FACE_PASS, T.BACK_PASS, T.HEAD_PASS
+FROM TF_B_ORDER_PHOTO_TAG T
+WHERE T.ORDER_ID = #{param.orderId}
+AND T.PRE_NUM = #{param.number}
+    </select>
+
+    <select id="queryOrder" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+SELECT
+O.ORDER_ID AS "orderId",
+O.PSPT_NO as "psptNo",
+O.CUST_NAME "custName",
+O.PROVINCE_CODE AS "provinceCode",
+O.MULTY_CARD_TAG AS "multiCardTag"
+FROM TF_B_ORDER_PHOTO_INFO O
+WHERE O.ORDER_ID = #{param.orderId}
+ AND O.PRE_NUM = #{param.number}
+    </select>
+
+    <select id="queryPhotoInfos" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT '0' as "tag",
+       FACE_TAG         "isUpload",
+       FACE_PASS        "isPass",
+       FRONT_IMAGE_PATH "imagePath",
+       FRONT_OCR_CHECK  "ocrCheck",
+       PROVINCE_CODE    "provinceCode"
+FROM TF_B_ORDER_PHOTO_TAG
+WHERE ORDER_ID = #{param.orderId}
+  AND PRE_NUM =  #{param.number}
+UNION ALL
+SELECT '1' as "tag",
+       BACK_TAG        "isUpload",
+       BACK_PASS       "isPass",
+       BACK_IMAGE_PATH "imagePath",
+       BACK_OCR_CHECK  "ocrCheck",
+       PROVINCE_CODE   "provinceCode"
+FROM TF_B_ORDER_PHOTO_TAG
+WHERE ORDER_ID = #{param.orderId}
+  AND PRE_NUM =  #{param.number}
+UNION ALL
+SELECT '2' as "tag",
+       HEAD_TAG        "isUpload",
+       HEAD_PASS       "isPass",
+       HEAD_IMAGE_PATH "imagePath",
+       BACK_OCR_CHECK  "ocrCheck",
+       PROVINCE_CODE   "provinceCode"
+FROM TF_B_ORDER_PHOTO_TAG
+WHERE ORDER_ID = #{param.orderId}
+  AND PRE_NUM = #{param.number}
+    </select>
+
+    <select id="queryUploadTime" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+ select t.create_time "createTime",t.image_path
+ from TL_B_PHOTO_PATH_LOG t
+ where t.ORDER_ID=#{param.orderId}
+ and t.IMAGE_PATH=#{param.imagePath} and t.IMAGE_TYPE=#{param.tag}
+ and t.PRE_NUM=#{param.number}
+    </select>
+    <select id="queryImgPath" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+SELECT T.FRONT_IMAGE_PATH,T.BACK_IMAGE_PATH,T.HEAD_IMAGE_PATH
+FROM TF_B_ORDER_PHOTO_TAG T
+WHERE T.ORDER_ID = #{param.orderId}
+AND T.PRE_NUM = #{param.number}
+    </select>
+    <select id="queryIfPhotoTagExist" parameterType="java.util.HashMap" resultType="java.lang.String">
+SELECT ORDER_ID
+FROM TF_B_ORDER_PHOTO_TAG
+WHERE ORDER_ID = #{param.orderId}
+AND PRE_NUM=#{param.number}
+    </select>
+
+    <select id="queryIfPhotoInfoExist" parameterType="java.util.HashMap" resultType="java.lang.String">
+SELECT ORDER_ID
+FROM TF_B_ORDER_PHOTO_INFO
+WHERE ORDER_ID = #{param.orderId}
+AND PRE_NUM=#{param.preNum}
+    </select>
+
+    <update id="updatePhotoTag" parameterType="java.util.HashMap">
+        UPDATE TF_B_ORDER_PHOTO_TAG
+        SET UPDATE_TIME = now(),
+        CHANNEL = #{param.channel},
+        <if test="param.type==0">
+            FACE_TAG = '1',
+            FRONT_IMAGE_PATH = #{param.saveImgPath}
+        </if>
+        <if test="param.type==1">
+            BACK_TAG = '1',
+            BACK_IMAGE_PATH = #{param.saveImgPath}
+        </if>
+        <if test="param.type==2">
+            HEAD_TAG = '1',
+            HEAD_IMAGE_PATH = #{param.saveImgPath}
+        </if>
+        WHERE ORDER_ID =#{param.orderId}
+        AND PRE_NUM = #{param.number}
+    </update>
+    <insert id="insertPhotoTag" parameterType="java.util.HashMap">
+        INSERT INTO TF_B_ORDER_PHOTO_TAG
+        (
+        ORDER_ID,
+        CHANNEL,
+        PROVINCE_CODE,
+        PRE_NUM,
+        MULTY_CARD_TAG,
+        <if test="param.type==0">
+            FACE_TAG,
+            FRONT_IMAGE_PATH
+        </if>
+        <if test="param.type==1">
+            BACK_TAG,
+            BACK_IMAGE_PATH
+        </if>
+        <if test="param.type==2">
+            HEAD_TAG,
+            HEAD_IMAGE_PATH
+        </if>
+        )
+        VALUES (
+        #{param.orderId},
+        #{param.channel},
+        #{param.provinceCode},
+        #{param.number},
+        #{param.multiCardTag},
+        '1',
+        #{param.saveImgPath}
+        )
+    </insert>
+
+
+    <insert id="insertLog" parameterType="java.util.HashMap">
+        INSERT INTO TL_B_PHOTO_PATH_LOG (ORDER_ID,UP_TAG,IMAGE_PATH,IMAGE_TYPE,PRE_NUM,CHANNEL)
+        VALUES (#{param.orderId},'1',#{param.saveImgPath},#{param.type},#{param.number},#{param.channel})
+    </insert>
+
+    <insert id="insertOcrLog" parameterType="java.util.HashMap">
+     INSERT INTO TL_B_UPLOADCHECK_LOG
+    (ORDER_ID,INTERFACE_CODE,CHECK_RESULT,CHECK_DETAIL,START_TIME, FINISH_TIME,LOG_ID,PRE_NUM)
+    VALUES(#{param.orderId},#{param.interface},#{param.errorCode},#{param.respose},#{param.startDate},#{param.endDate},#{param.logId},#{param.preNum})
+    </insert>
+
+    <update id="updateOcrTag" parameterType="java.util.HashMap">
+        UPDATE TF_B_ORDER_PHOTO_TAG
+        SET UPDATE_TIME = now(),
+        <if test="param.type==0">
+            FRONT_OCR_CHECK = #{param.ocrCheck}
+        </if>
+        <if test="param.type==1">
+            BACK_OCR_CHECK = #{param.ocrCheck}
+        </if>
+        WHERE ORDER_ID =#{param.orderId}
+        AND PRE_NUM = #{param.number}
+    </update>
+
+    <update id="updatePhotoPass" parameterType="java.util.HashMap">
+        UPDATE TF_B_ORDER_PHOTO_TAG
+        SET
+        <if test="param.type==0">
+            FACE_PASS = '2'
+        </if>
+        <if test="param.type==1">
+            BACK_PASS = '2'
+        </if>
+        <if test="param.type==2">
+            HEAD_PASS = '2'
+        </if>
+        WHERE ORDER_ID =#{param.orderId}
+        AND PRE_NUM = #{param.number}
+    </update>
+    <update id="updateUploadTag" parameterType="java.util.HashMap">
+        UPDATE TF_B_ORDER_PHOTO_TAG T
+        SET T.UPLOAD_TAG = '1'
+        WHERE ORDER_ID =#{param.orderId}
+        AND PRE_NUM = #{param.number}
+    </update>
+
+    <insert id="insertKafukaLog" parameterType="java.util.HashMap">
+        INSERT INTO TL_B_KAFUKA_LOG
+    (
+    ORDER_ID,
+    SERIAL_ID,
+    PRE_NUM
+    )
+    VALUES (
+    #{param.orderId},
+    #{param.serialId},
+        #{param.number}
+        )
+    </insert>
+    <select id="queryPhotoTag" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT
+    ORDER_ID, PROVINCE_CODE, FACE_TAG, BACK_TAG, HEAD_TAG, FACE_CHECK, BACK_CHECK, HEAD_CHECK,
+    FRONT_IMAGE_PATH, BACK_IMAGE_PATH, HEAD_IMAGE_PATH, UPLOAD_TAG, CREATE_TIME, UPDATE_TIME, FACE_PASS, BACK_PASS,
+    HEAD_PASS, CHANNEL, PSPT_ADDR, NATION, PHOTO_PATH, FRONT_OCR_CHECK, BACK_OCR_CHECK
+    from TF_B_ORDER_PHOTO_TAG
+    WHERE ORDER_ID =#{param.orderId}
+        AND PRE_NUM = #{param.number}
+    </select>
+    <insert id="reInsertPhotoTag" parameterType="java.util.HashMap">
+        INSERT INTO TF_B_ORDER_PHOTO_TAG
+        (
+        ORDER_ID,
+        PROVINCE_CODE,
+        FACE_TAG,
+        BACK_TAG,
+        HEAD_TAG,
+        FACE_CHECK,
+        BACK_CHECK,
+        HEAD_CHECK,
+        FRONT_IMAGE_PATH,
+        BACK_IMAGE_PATH,
+        HEAD_IMAGE_PATH,
+        UPLOAD_TAG,
+        /* CREATE_TIME,*/
+        <!--    UPDATE_TIME,-->
+        FACE_PASS,
+        BACK_PASS,
+        HEAD_PASS,
+        CHANNEL,
+        PSPT_ADDR,
+        NATION,
+        PRE_NUM,
+        MULTY_CARD_TAG
+        )
+        VALUES
+        (
+        #{param.orderId},#{param.provinceCode}, #{param.faceTag}, #{param.backTag}, #{param.headTag},
+        #{param.faceCheck}, #{param.backCheck}, #{param.headCheck},
+        #{param.frontImagePath}, #{param.backImagePath}, #{param.headImagePath}, '0',/* now(), now(),*/
+        #{param.facePass}, #{param.backPass},
+        #{param.headPass}, #{param.channel}, #{param.psptAddr}, #{param.nation},#{param.preNum},#{param.multiCardTag}
+        )
+    </insert>
+    <insert id="reInsertPhotoInfo" parameterType="java.util.HashMap">
+    INSERT INTO tf_b_order_photo_info (ORDER_ID, PSPT_NO, CUST_NAME, PROVINCE_CODE, PRE_NUM,MULTY_CARD_TAG)
+VALUES (#{param.orderId}, #{param.psptNo}, #{param.custName}, #{param.provinceCode}, #{param.preNum}, #{param.multiCardTag});
+</insert>
+
+    <update id="reUpdatePhotoTag" parameterType="java.util.HashMap">
+        UPDATE TF_B_ORDER_PHOTO_TAG
+        SET ORDER_ID=#{param.orderId},
+        PROVINCE_CODE=#{param.provinceCode},
+        FACE_TAG=#{param.faceTag},
+        BACK_TAG=#{param.backTag},
+        HEAD_TAG=#{param.headTag},
+        FACE_CHECK=#{param.faceCheck},
+        BACK_CHECK=#{param.backCheck},
+        HEAD_CHECK=#{param.headCheck},
+        FRONT_IMAGE_PATH=#{param.frontImagePath},
+        BACK_IMAGE_PATH=#{param.backImagePath},
+        HEAD_IMAGE_PATH=#{param.headImagePath},
+        UPLOAD_TAG='0',
+        /* CREATE_TIME,*/
+        <!--    UPDATE_TIME,-->
+        FACE_PASS=#{param.facePass},
+        BACK_PASS=#{param.backPass},
+        HEAD_PASS=#{param.headPass},
+        CHANNEL=#{param.channel},
+        PSPT_ADDR=#{param.psptAddr},
+        NATION=#{param.nation},
+        PRE_NUM=#{param.preNum},
+        MULTY_CARD_TAG=#{param.multiCardTag}
+    </update>
+
+    <update id="reUpdatePhotoInfo" parameterType="java.util.HashMap">
+    UPDATE tf_b_order_photo_info SET ORDER_ID=#{param.orderId}, PSPT_NO=#{param.psptNo}, CUST_NAME=#{param.custName},
+     PROVINCE_CODE=#{param.provinceCode}, PRE_NUM=#{param.preNum},MULTY_CARD_TAG= #{param.multiCardTag}
+</update>
+
+</mapper>
