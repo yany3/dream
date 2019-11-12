@@ -1,7 +1,10 @@
 package com.dr.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Map;
 
 /**
  * @Author: yanyu5@asiainfo.com
@@ -10,5 +13,8 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface DemoMapper {
+
+    String test(@Param("param") Map param);
+
 
 }

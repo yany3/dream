@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * @Author: yanyu5@asiainfo.com
  * @Date: 2019-11-05 15:08
@@ -18,5 +20,8 @@ public class DemoService {
     DemoMapper demoMapper;
     private static Logger logger = LoggerFactory.getLogger(DemoService.class);
 
+    public String getUserName(Map param){
+        return demoMapper.test(param);
+    }
 
 }
