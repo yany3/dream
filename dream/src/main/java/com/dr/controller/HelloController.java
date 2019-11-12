@@ -3,7 +3,7 @@ package com.dr.controller;
 import com.dr.bean.QueryResponse;
 import com.dr.bean.UserInfo;
 import com.dr.service.DemoService;
-import com.dr.utils.checkUtils;
+import com.dr.utils.CheckUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class HelloController {
     @RequestMapping(value = "/testDB")
     public QueryResponse testDB(UserInfo userInfo) throws Exception{
         //实例化返回值bean
-       QueryResponse queryResponse= checkUtils.checkRequestParam(userInfo);
+       QueryResponse queryResponse= CheckUtils.checkRequestParam(userInfo);
         try {
             Map param = BeanUtils.describe(userInfo);
             String userName = demoService.getUserName(param);

@@ -3,14 +3,13 @@ package com.dr.utils;
 import com.dr.base.responseFactory;
 import com.dr.bean.QueryResponse;
 import com.dr.bean.UserInfo;
-import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * @Author: yanyu5@asiainfo.com
  * @Date: 2019-11-12 10:57
  */
-public class checkUtils {
+public class CheckUtils {
     /**
      * 检查字符是否为 null || ""
      * 如果是 null 或者 "" 则返回false ,反则为 true
@@ -35,7 +34,7 @@ public class checkUtils {
 
     public static QueryResponse checkRequestParam (UserInfo userInfo) throws Exception{
         QueryResponse queryResponse= responseFactory.getQryRsp(userInfo);
-        boolean isParamNotNull = checkUtils.checkStringIsNull(userInfo.getPassWord(),userInfo.getUserId(),userInfo.getUserName());
+        boolean isParamNotNull = CheckUtils.checkStringIsNull(userInfo.getPassWord(),userInfo.getUserId(),userInfo.getUserName());
         if (!isParamNotNull) {
             queryResponse.setResponseMsg("参数存在空字段");
             queryResponse.setResponseCode("9998");

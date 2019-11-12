@@ -2,7 +2,6 @@ package com.dr.base;
 
 import com.dr.bean.QueryResponse;
 import com.dr.bean.UserInfo;
-import com.dr.utils.checkUtils;
 
 /**
  * @Author: yanyu5@asiainfo.com
