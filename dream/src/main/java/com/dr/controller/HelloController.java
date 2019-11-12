@@ -50,7 +50,7 @@ public class HelloController {
     }
 
     @RequestMapping(value = "/testDB")
-    public QueryResponse testDB(UserInfo userInfo){
+    public QueryResponse testDB(UserInfo userInfo) throws Exception{
         //实例化返回值bean
        QueryResponse queryResponse= checkUtils.checkRequestParam(userInfo);
         try {
