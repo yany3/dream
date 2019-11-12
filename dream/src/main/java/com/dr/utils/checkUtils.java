@@ -33,13 +33,13 @@ public class checkUtils {
         return false;
     }
 
-    public static QueryResponse checkRequestParam (UserInfo userInfo){
+    public static QueryResponse checkRequestParam (UserInfo userInfo) throws Exception{
         QueryResponse queryResponse= responseFactory.getQryRsp(userInfo);
         boolean isParamNotNull = checkUtils.checkStringIsNull(userInfo.getPassWord(),userInfo.getUserId(),userInfo.getUserName());
         if (!isParamNotNull) {
             queryResponse.setResponseMsg("参数存在空字段");
             queryResponse.setResponseCode("9998");
-            return queryResponse;
+            throw new Exception("参数存在空字段,9998");
         }
         return queryResponse;
     }
