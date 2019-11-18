@@ -1,10 +1,12 @@
 package com.dr.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.n3r.eql.util.T;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: yanyu5@asiainfo.com
@@ -12,9 +14,12 @@ import java.util.Map;
  */
 @Mapper
 @Repository
-public interface DemoMapper {
+public interface DemoMapper extends BaseMapper<T> {
 
     String test(@Param("param") Map param);
 
+    String queryIfPhotoTagExist(@Param("param") Map param);
+
+    String testDb(@Param("param") String param);
 
 }

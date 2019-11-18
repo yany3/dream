@@ -24,6 +24,7 @@ public class CheckUtils {
             if (StringUtils.isEmpty(value[i])) {
                 return false;
             }
+
             count++;
         }
         if (count == value.length) {
