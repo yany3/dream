@@ -22,7 +22,7 @@
 
     <!-- Appender to log to file -->
     <appender name="flatFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/Users/yanyu/Documents/workspace/log/base/${serverPort}_${springAppName}.log</file>
+        <file>/usr/logs/${serverPort}_${springAppName}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <maxHistory>3</maxHistory>
@@ -36,7 +36,7 @@
     ​
     <!-- Appender to log to file in a JSON format -->
     <appender name="monitor" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/Users/yanyu/Documents/workspace/log/baseMonitor/${serverPort}_${springAppName}.json</file>
+        <file>/usr/logs/${serverPort}_${springAppName}.json</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_FILE}.json.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <maxHistory>2</maxHistory>

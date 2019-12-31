@@ -75,4 +75,17 @@ public class HelloController {
         String result = demoService.getUserName(param);
         return result;
     }
+
+    public static void main(String[] args) {
+        try {
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+//    public static void test11() throws Exception{
+//        System.out.println("1");
+//        throw new Exception("11");
+//        System.out.println("2");
+//    }
 }
