@@ -1,13 +1,11 @@
 package com.dr.service;
 
-import com.dr.mapper.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.n3r.eql.Eql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,14 +15,18 @@ import java.util.Map;
 @Service
 @Slf4j
 public class DemoService {
-    @Autowired
-    DemoMapper demoMapper;
+
     private static Logger logger = LoggerFactory.getLogger(DemoService.class);
 
     public String getUserName(Map param){
-        return demoMapper.test(param);
+        return new Eql().selectFirst("test").params(param).returnType(String.class).execute();
     }
-    public String getDbTest(String param){
-        return demoMapper.testDb("1");
+    public String getDbTest(){
+        return new Eql().selectFirst("test").returnType(String.class).execute();
     }
+
+    public String eqlTest(Map param){
+        return new Eql().selectFirst("test").params(param).returnType(String.class).execute();
+    }
+
 }

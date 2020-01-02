@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,24 +67,11 @@ public class HelloController {
             return queryResponse;
         }
     }
-    @RequestMapping(value = "/testMysql")
-    public String test(){
-        Map param = new HashMap(6);
+    @RequestMapping(value = "testEql")
+    public String testEql(){
+        Map param = new HashMap();
         param.put("user_id","1");
-        String result = demoService.getUserName(param);
-        return result;
+        return demoService.eqlTest(param);
     }
 
-    public static void main(String[] args) {
-        try {
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-//    public static void test11() throws Exception{
-//        System.out.println("1");
-//        throw new Exception("11");
-//        System.out.println("2");
-//    }
 }
