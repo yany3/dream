@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -68,9 +69,9 @@ public class HelloController {
         }
     }
     @RequestMapping(value = "testEql")
-    public String testEql(String userId){
+    public String testEql(@RequestParam String userId){
         Map param = new HashMap();
-        param.put("user_id",userId);
+        param.put("userId",userId);
         return demoService.eqlTest(param);
     }
 

@@ -1,4 +1,4 @@
 --[test]
-    select user_name from testdb.test_table where user_id = #user_id#;
+    select user_name from test_table where user_id = #userId#;
 --[dual]
 select 1 from dual;
