@@ -68,9 +68,9 @@ public class HelloController {
         }
     }
     @RequestMapping(value = "testEql")
-    public String testEql(){
+    public String testEql(String userId){
         Map param = new HashMap();
-        param.put("user_id","1");
+        param.put("user_id",userId);
         return demoService.eqlTest(param);
     }
 
