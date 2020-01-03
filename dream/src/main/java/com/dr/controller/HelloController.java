@@ -30,8 +30,8 @@ public class HelloController {
 
     @RequestMapping(value = "/hello")
     public String sayHello(){
-        logger.error("hello world");
-        return "hello world";
+        logger.info("hello world");
+        return "index";
     }
 
     @RequestMapping(value = "/calculate/mod")
