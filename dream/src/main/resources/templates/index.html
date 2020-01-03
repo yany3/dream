@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>hello world</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<!--    <script src="../static/js/login.js"></script>-->
+    <script>
+        function login() {
+            var username = $('#username').val();
+            var password = $('#password').val();
+            if (password==null||password==''||username==null||username==''){
+                alert("username or password should not be empty!");
+                return;
+            }
+            $.ajax({
+                url: "/login",
+                data: {"username": username,"password":password},
+                type: "POST",
+                success: function (data) {
+                    if (data == "0000") {
+                        window.location.href('www.baidu.com');
+                    }else {
+                        alert("auth error")
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 <div align="center">
     <h1> WELCOME TO DREAMER.RUN
     </h1>
+    用户名：<input id="username">
+    密码:<input id="password">
+    <button id="login" onclick="login()">登录</button>
 </div>
 </body>
 </html>
